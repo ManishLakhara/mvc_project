@@ -62,8 +62,8 @@ public function run($accion) {
         // }
 
         $security=new Security($this->Connection);
-        
-        
+        $result = $security->getByUsername[$_POST["username"]];
+        var_dump($result);
         
     }
 
