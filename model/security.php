@@ -1,7 +1,7 @@
 <?php
 
 class Security{
-    private $table;
+    private $table = "admin";
     private $Connection;
     private $id;
     private $username;
@@ -28,12 +28,14 @@ class Security{
         $this->$password=$password;
     }
     public function getByUsername($value){
-        $consultation = $this->Connection->prepare("SELECT * FROM admin WHERE username = ".$value);
-        var_dump($consultation->execute());
-        $resultados = $consultation->setFetchMode(PDO::FETCH_ASSOC);
+        $consultation = $this->Connection->prepare("SELECT password
+        FROM " . $this->table . "  WHERE username = :value");
+        $consultation->execute(array(
+            "value" => $value
+        ));
+        $resultados = $consultation->fetchAll();
         $this->Connection = null; //connection closure
-        var_dump($resultados);
-        return $resultados;
+        return $resultados[0];
     }
 }
 

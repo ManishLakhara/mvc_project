@@ -6,7 +6,7 @@ class EmployeesController{
     private $Connection;
     private $conn;
     private $ConnConnection;
-
+    private $checked=0;
     public function __construct() {
         require_once __DIR__ . "/../core/Conectar.php";
         require_once __DIR__ . "/../core/conn.php";
@@ -52,19 +52,37 @@ public function run($accion) {
 }
 
     public function check(){
-        // $security = new Security($this->ConnConnection);
-        // $result = $security->getByUsername($_POST["username"]);
-        // if($result==$_POST["password"]){
-        //     $this->view("detalle",array(
-        //         "employee"=>$employee,
-        //         "titulo" => "Detalle Employee"
-        //     ));
-        // }
-
-        $security=new Security($this->Connection);
-        $result = $security->getByUsername[$_POST["username"]];
-        var_dump($result);
-        
+        if($this->checked==0){
+            $security=new Security($this->Connection);
+            $result=$security->getByUsername($_POST["username"]);
+            if($result["password"]==$_POST["password"]){
+                $this->checked = 1;
+                $employee=new Employee($this->Connection);
+            
+                //We get all the employees
+                $employees=$employee->getAll();
+            
+                //We load the index view and pass values to it
+                $this->view("index",array(
+                    "employees"=>$employees,
+                    "titulo" => "PHP MVC"
+                ));
+            }else{
+                $this->view("login",array(
+                    "error"=>"Incorrect Password"
+            ));
+            }
+        }else{
+            $this->checked = 1;
+                $employee=new Employee($this->Connection);            
+                //We get all the employees
+                $employees=$employee->getAll();
+                //We load the index view and pass values to it
+            $this->view("index",array(
+                "employees"=>$employees,
+                "titulo" => "PHP MVC"
+            ));
+        } 
     }
 
     public function login(){
@@ -78,10 +96,6 @@ public function run($accion) {
     */ 
     public function index(){
 
-        
-
-
-        
         //We create the employee object
         $employee=new Employee($this->Connection);
         
