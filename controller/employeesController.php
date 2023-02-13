@@ -3,21 +3,20 @@
 class EmployeesController{
 
     private $conectar;
+    private $mysqliConectar;
     private $Connection;
-    private $conn;
-    private $ConnConnection;
-    private $checked=0;
+    private $mysqliConnection;
+    private $checked=false;
     public function __construct() {
-        require_once __DIR__ . "/../core/Conectar.php";
-        require_once __DIR__ . "/../core/conn.php";
+        //require_once __DIR__ . "/../core/Conectar.php";
+        require_once __DIR__ . "/../core/mysqliConectar.php";
         require_once __DIR__ . "/../model/employee.php";
         require_once __DIR__ . "/../model/security.php";
 
-        $this->conectar= new Conectar();
-        //$this->conn= new Conn();
-
-        $this->Connection=$this->conectar->Connection();
-        //$this->ConnConnection=$this->conn->Connection();
+        //$this->conectar= new Conectar();
+        //$this->Connection=$this->conectar->Connection();
+        $this->mysqliConectar = new MysqliConectar();
+        $this->mysqliConnection = $this->mysqliConectar->Connection();
     }
 
 /**
@@ -52,36 +51,20 @@ public function run($accion) {
 }
 
     public function check(){
-        if($this->checked==0){
-            $security=new Security($this->Connection);
+        if($this->checked==false){
+            $security=new Security($this->mysqliConnection);
             $result=$security->getByUsername($_POST["username"]);
-            if($result["password"]==$_POST["password"]){
-                $this->checked = 1;
-                $employee=new Employee($this->Connection);
-            
-                //We get all the employees
-                $employees=$employee->getAll();
-            
-                //We load the index view and pass values to it
-                $this->view("index",array(
-                    "employees"=>$employees,
-                    "titulo" => "PHP MVC"
-                ));
+            if($result==$_POST["password"]){
+                $this->checked=true;
+                $this->index();
+
             }else{
                 $this->view("login",array(
                     "error"=>"Incorrect Password"
-            ));
-            }
+            ));          
+            }         
         }else{
-            $this->checked = 1;
-                $employee=new Employee($this->Connection);            
-                //We get all the employees
-                $employees=$employee->getAll();
-                //We load the index view and pass values to it
-            $this->view("index",array(
-                "employees"=>$employees,
-                "titulo" => "PHP MVC"
-            ));
+        $this->index();
         } 
     }
 
@@ -97,8 +80,7 @@ public function run($accion) {
     public function index(){
 
         //We create the employee object
-        $employee=new Employee($this->Connection);
-        
+        $employee=new Employee($this->mysqliConnection);
         //We get all the employees
         $employees=$employee->getAll();
        
@@ -119,7 +101,7 @@ public function run($accion) {
 public function detalle(){
         
     //We load the model
-    $modelo = new Employee($this->Connection);
+    $modelo = new Employee($this->mysqliConnection);
     //We recover the employee from the BBDD
     $employee = $modelo->getById($_GET["id"]);
     //We load the detail view and pass values to it
@@ -138,14 +120,14 @@ public function crear(){
     if(isset($_POST["Name"])){
          
     //Creamos un usuario
-        $employee=new Employee($this->Connection);
+        $employee=new Employee($this->mysqliConnection);
         $employee->setName($_POST["Name"]);
         $employee->setSurname($_POST["Surname"]);
         $employee->setEmail($_POST["email"]);
         $employee->setphone($_POST["phone"]);
         $save=$employee->save();
     }
-    header('Location: index.php');
+    $this->index();
 }
 
     /**
@@ -158,7 +140,7 @@ public function actualizar(){
         if(isset($_POST["id"])){
             
             //We create a user
-            $employee=new Employee($this->Connection);
+            $employee=new Employee($this->mysqliConnection);
             $employee->setId($_POST["id"]);
             $employee->setName($_POST["Name"]);
             $employee->setSurname($_POST["Surname"]);
@@ -166,7 +148,7 @@ public function actualizar(){
             $employee->setphone($_POST["phone"]);
             $save=$employee->update();
         }
-        header('Location: index.php');
+        $this->index();
 }
 
      /**

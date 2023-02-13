@@ -21,11 +21,11 @@
             <form action="index.php?controller=employees&action=actualizar" method="post">
                 <h3>User detail</h3>
                 <hr/>
-                <input type="hidden" name="id" value="<?php echo $datos["employee"]->id ?>"/>
-                Name: <input type="text" name="Name" value="<?php echo $datos["employee"]->Name ?>" class="form-control"/>
-                Surname: <input type="text" name="Surname" value="<?php echo $datos['employee']->Surname ?>" class="form-control"/>
-                Email: <input type="text" name="email" value="<?php echo $datos['employee']->email ?>" class="form-control"/>
-                phone: <input type="text" name="phone" value="<?php echo$datos['employee']->phone ?>" class="form-control"/>
+                <input type="hidden" name="id" value="<?php echo $datos["employee"]['id'] ?>"/>
+                Name: <input type="text" name="Name" value="<?php echo $datos["employee"]['Name'] ?>" class="form-control"/>
+                Surname: <input type="text" name="Surname" value="<?php echo $datos['employee']['Surname'] ?>" class="form-control"/>
+                Email: <input type="text" name="email" value="<?php echo $datos['employee']['email'] ?>" class="form-control"/>
+                phone: <input type="text" name="phone" value="<?php echo$datos['employee']['phone'] ?>" class="form-control"/>
                 <input type="submit" value="Send" class="btn btn-success"/>
             </form>
             <a href="index.php" class="btn btn-info">Return</a>

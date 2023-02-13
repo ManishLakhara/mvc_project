@@ -28,14 +28,12 @@ class Security{
         $this->$password=$password;
     }
     public function getByUsername($value){
-        $consultation = $this->Connection->prepare("SELECT password
-        FROM " . $this->table . "  WHERE username = :value");
-        $consultation->execute(array(
-            "value" => $value
-        ));
-        $resultados = $consultation->fetchAll();
-        $this->Connection = null; //connection closure
-        return $resultados[0];
+        $sql="SELECT password FROM ". $this->table ." where username = '".$value."'";
+        $result = $this->Connection->query($sql);
+        if($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            return $data["password"];
+        }
     }
 }
 
